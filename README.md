@@ -75,7 +75,7 @@
       bash
       Copy
       Edit
-      git clone https://github.com/your-username/restaurant-review-api.git
+      git clone https://github.com/balram-jat-fullstack/restaurant-review-api.git
     2. Install Dependencies
       Navigate to the project directory and run the following command to install the necessary dependencies:
 
