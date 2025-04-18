@@ -29,7 +29,7 @@ public class RestaurantController {
     })
     @GetMapping("/top/{cuisineType}")
     public ResponseEntity<List<Restaurant>> getTopRestaurants(
-            @Parameter(description = "Cuisine type to filter top restaurants by", example = "Italian")
+                @Parameter(description = "Cuisine type to filter top restaurants by", example = "Italian")
             @PathVariable String cuisineType) {
         return ResponseEntity.ok(restaurantService.getTopRestaurantsByCuisine(cuisineType));
     }

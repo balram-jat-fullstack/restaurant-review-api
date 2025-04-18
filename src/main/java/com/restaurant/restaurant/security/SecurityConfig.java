@@ -15,12 +15,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/user/**").hasRole("USER")
-                .anyRequest().authenticated()
-            )
+        http.authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll()
+        )
+//            .authorizeHttpRequests(auth -> auth
+//                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                .requestMatchers("/api/user/**").hasRole("USER")
+//                .requestMatchers("/api/restaurants/**").hasAnyRole("USER", "ADMIN")
+//                .anyRequest().authenticated()
+//            )
             .httpBasic(Customizer.withDefaults());
 
         return http.build();
