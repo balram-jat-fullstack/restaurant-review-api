@@ -7,49 +7,77 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class RestaurantServiceTest {
-
-    @Mock
-    private RestaurantRepository restaurantRepository;
+class RestaurantServiceTest {
 
     @InjectMocks
     private RestaurantService restaurantService;
 
-    private Restaurant italianRestaurant;
-    private Restaurant mexicanRestaurant;
+    @Mock
+    private RestaurantRepository restaurantRepository;
+
+    private Restaurant restaurant;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);  // Initializes the mocks
-
-        italianRestaurant = new Restaurant();
-        italianRestaurant.setId(1L);
-        italianRestaurant.setName("Italian Bistro");
-        italianRestaurant.setCuisineType("Italian");
-
-        mexicanRestaurant = new Restaurant();
-        mexicanRestaurant.setId(2L);
-        mexicanRestaurant.setName("Mexican Grill");
-        mexicanRestaurant.setCuisineType("Mexican");
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        restaurant = new Restaurant();
+        restaurant.setId(1L);
+        restaurant.setName("Test Restaurant");
+        restaurant.setAddress("123 Test Street"); // Assuming an address field
     }
 
     @Test
-    public void testGetTopRestaurantsByCuisine() {
-        // Mock the repository behavior
-        when(restaurantRepository.findTop3ByCuisineTypeOrderByName("Italian")).thenReturn(Arrays.asList(italianRestaurant));
+    void testGetRestaurantById_Success() {
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
-        List<Restaurant> topItalianRestaurants = restaurantService.getTopRestaurantsByCuisine("Italian");
+        Optional<Restaurant> result = restaurantService.getRestaurantById(1L);
 
-        assertEquals(1, topItalianRestaurants.size());
-        assertEquals("Italian Bistro", topItalianRestaurants.get(0).getName());
+        assertTrue(result.isPresent());
+        assertEquals("Test Restaurant", result.get().getName());
+        verify(restaurantRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetRestaurantById_NotFound() {
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<Restaurant> result = restaurantService.getRestaurantById(1L);
+
+        assertTrue(result.isEmpty());
+        verify(restaurantRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetAllRestaurants() {
+        Restaurant restaurant2 = new Restaurant();
+        restaurant2.setId(2L);
+        restaurant2.setName("Another Restaurant");
+        restaurant2.setAddress("456 Another Street");
+
+        when(restaurantRepository.findAll()).thenReturn(Arrays.asList(restaurant, restaurant2));
+
+        List<Restaurant> result = restaurantService.getAllRestaurants();
+
+        assertEquals(2, result.size());
+        verify(restaurantRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testSaveRestaurant() {
+        when(restaurantRepository.save(restaurant)).thenReturn(restaurant);
+
+        Restaurant result = restaurantService.createRestaurant(restaurant);
+
+        assertNotNull(result);
+        assertEquals("Test Restaurant", result.getName());
+        verify(restaurantRepository, times(1)).save(restaurant);
     }
 }

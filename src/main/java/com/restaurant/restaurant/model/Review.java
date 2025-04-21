@@ -1,17 +1,18 @@
 package com.restaurant.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.restaurant.restaurant.enums.ReviewStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Data
+@Getter
+@Setter
 @Entity
 @Schema(description = "Represents a review submitted by a customer for a restaurant.")
 public class Review {
@@ -22,7 +23,7 @@ public class Review {
     private Long id;
 
     @Schema(description = "Rating given by the customer (1 to 5)", example = "4")
-    private int rating;
+    private Integer rating;
 
     @Schema(description = "Optional comment provided by the customer", example = "Great ambiance and food!")
     private String comment;
@@ -35,5 +36,7 @@ public class Review {
 
     @ManyToOne
     @Schema(description = "The restaurant that the review is associated with")
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonBackReference
     private Restaurant restaurant;
 }

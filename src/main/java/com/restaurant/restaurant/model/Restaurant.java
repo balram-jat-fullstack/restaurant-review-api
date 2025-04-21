@@ -1,12 +1,12 @@
 package com.restaurant.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.restaurant.restaurant.enums.PriceRange;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -29,4 +29,8 @@ public class Restaurant {
 
     @Schema(description = "Price range of the restaurant", example = "MODERATE")
     private PriceRange priceRange;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Review> reviews;
 }
